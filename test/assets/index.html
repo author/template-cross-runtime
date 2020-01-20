@@ -1,7 +1,6 @@
 <html>
   <head>
     <title>{{NAMESPACE}} Manual Testing</title>
-    <!-- <script src="{{script}}" type="module"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.19.0/min/vs/loader.js"></script>
     <style>
       body {
@@ -52,6 +51,16 @@
         justify-content: flex-end;
       }
 
+      .toolbar nav button {
+        margin-left: .5vw;
+        cursor: pointer;
+      }
+
+      .toolbar .nav button.running {
+        cursor: wait;
+        background-color: rgba(255,255,255, .1);
+      }
+
       .toolbar nav button.run {
         position: relative;
         background-color: green;
@@ -63,7 +72,6 @@
         padding: .35em 1.89em;
         border-radius: 3px;
         opacity: .8;
-        cursor: pointer;
         outline: none;
       }
 
@@ -83,12 +91,20 @@
         outline: none;
       }
 
+      .toolbar button.unittests {
+        opacity: .85;
+      }
+
+      .toolbar button.unittests:hover:before {
+        content: 'alt+enter';
+      }
+
       #editor {
         height: 100%;
         border-top: 1px solid rgba(0,0,0, .25);
         border-bottom: 1px solid rgba(0,0,0, .25);
         padding-top: 6px;
-        overflow:hidden;
+        overflow: hidden;
       }
 
       #included select {
@@ -133,6 +149,12 @@
       #included > div:last-of-type {
         padding-bottom: 6px;
       }
+
+      .hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
     </style>
   </head>
   <body>
@@ -141,8 +163,6 @@
         <div class="line">
           <select id="source_import">
             {{OPTIONS}}
-            <!-- <option value="{{script}}">import NGN from '{{script}}' (Transpiled)</option>
-            <option value="./src/main.js">import NGN from './src/main.js' (Raw Source)</option> -->
           </select>
         </div>
       </div>
@@ -152,8 +172,9 @@
       <nav class="toolbar">
         <label>Output in DevTools Console</label>
         <nav>
-          <!-- <button class="Reset">&#9658; Reset</button> -->
-          <button class="run">&#9658; Run</button>
+          <button class="hidden reset">&#9658; Reset</button>
+          <button class="hidden run unittests">&#9658; Run Test Suite</button>
+          <button class="run code">&#9658; Run</button>
         </nav>
       </nav>
     </footer>
@@ -178,7 +199,7 @@
       require(["vs/editor/editor.main"], function () {
         const offset = document.querySelectorAll('#included > div').length
         const ide = monaco.editor.create(document.getElementById("editor"), {
-          value: "console.log({{NAMESPACE}})",
+          value: `// Edit this code (saved in localStorage automatically)\n// console.log(example)\nconsole.log(example.env)\nconsole.log(example.add(1,2,3,4,5))\nconsole.log(example.avg(1,2,3,4,5))`,
           language: "javascript",
           fontFamily: '"Fira Code", Menlo, Monaco, "Courier New", monospace',
           fontSize: '16px',
@@ -215,25 +236,53 @@
         const output = document.querySelector('#console .output')
         let executionCount = 0
         
+        window.loadScript = (script, fn) => {
+          // console.log(`Loading ${script}`)
+          let el = document.createElement('script')
+          el.onload = () => fn()
+          el.setAttribute('data-userscript', true)
+          el.setAttribute('src', script)
+          el.setAttribute('type', 'text/javascript')
+          document.head.appendChild(el)
+        }
+
+        window.clearScripts = () => Array.from(document.querySelectorAll('script[data-userscript]')).forEach(el => el.parentNode.removeChild(el))
+
         window.run = function () {
           executionCount++
-console.log(`import(document.getElementById('source_import').value).then(__{{NAMESPACE}}__ => {
-            let {{NAMESPACE}} = __{{NAMESPACE}}__.default\n
-            ${ide.getValue()}
-          }).catch(e => {
-            const msg = new String(e.stack.toString())
-            console.warn('Original Error:\\n' + msg)
-            throw e
-          })`)
-          console.log(document.getElementById('source_import').value)
+          window.localize = false
+
           Function(`import(document.getElementById('source_import').value).then(__{{NAMESPACE}}__ => {
-            let {{NAMESPACE}} = __{{NAMESPACE}}__.default\n
-            ${ide.getValue()}
+            let {{NAMESPACE}} = __{{NAMESPACE}}__.default
+            if ({{NAMESPACE}} === undefined) {
+              window.localize = true
+            } else {
+              ${ide.getValue()}
+            }
           }).catch(e => {
             const msg = new String(e.stack.toString())
             console.warn('Original Error:\\n' + msg)
             throw e
           })`)()
+
+          setTimeout(() => {
+            let src = document.getElementById('source_import').value
+            
+            if (window.localize) {
+              if (window.__change_script__) {
+                window.clearScripts()
+                window.loadScript(src, Function(ide.getValue()))
+              } else {
+                let exists = Array.from(document.querySelectorAll('script[data-userscript')).filter(el => el.getAttribute('src') === src) > 0
+
+                if (!exists) {
+                  window.loadScript(src, Function(ide.getValue()))
+                } else {
+                  Function(ide.getValue())()
+                }
+              }
+            }
+          }, 150)
         }
 
         let code = localStorage.getItem('test_code')
@@ -251,9 +300,40 @@ console.log(`import(document.getElementById('source_import').value).then(__{{NAM
           }
         }
 
-        document.querySelector('button.run').addEventListener('click', window.run)
-        document.querySelector('#source_import').addEventListener('change', e => localStorage.setItem('test_import', document.getElementById('source_import').value))
+        document.querySelector('button.run.code').addEventListener('click', window.run)
+        document.querySelector('#source_import').addEventListener('change', e => {
+          let item = localStorage.getItem('test_import')
+          let selectedItem = document.getElementById('source_import').value
+
+          window.__change_script__ = false
+       
+          if (selectedItem !== item) {
+            window.__change_script__ = true
+            localStorage.setItem('test_import', selectedItem)
+          }
+        })
       })
+    
+      fetch('./browser-test.js')
+        .then(r => r.text())
+        .then(code => {
+          // Enable the unit test button
+          let testBtn = document.querySelector('button.unittests')
+
+          testBtn.classList.remove('hidden')
+
+          testBtn.addEventListener('click', e => {
+            clearScripts()
+            testBtn.classList.add('running')
+            loadScript('./bundle.js', () => {
+              Function(code)()
+              testBtn.classList.remove('running')
+            })
+          })
+        })
+        .catch(e => console.error(e))
+
+        window.__change_script__ = false
     </script>
-  </body>
+</body>
 </html>

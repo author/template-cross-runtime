@@ -26,11 +26,11 @@ if (build.isUnnecessaryBuild(input, outdir)) {
 }
 
 // 1. Clean prior builds
-fs.rmdirSync(rootdir, { recursive: true })
+// fs.rmdirSync(rootdir, { recursive: true })
 
 // Identify standard plugins
 const globalplugins = [
-  // build.only('browser')
+  build.only('browser')
 ]
 
 // 2. Build Browser Production Package: Standard (Minified/Munged)
@@ -43,13 +43,13 @@ build.supportedBrowsers().forEach(edition => {
     presets: [['@babel/env']],
     plugins: [
       ['@babel/plugin-transform-flow-strip-types'],
-      ['@babel/plugin-proposal-class-properties', { 'loose': false }],
-      ['@babel/plugin-proposal-private-methods', { 'loose': false }]
+      ['@babel/plugin-proposal-class-properties', { loose: false }],
+      ['@babel/plugin-proposal-private-methods', { loose: false }]
     ]
   }))
 
-  plugins.push(terser({
-    module: true,
+  let terserCfg = {
+    module: edition === 'current',
     // mangle: {
     //   toplevel: true
     //   // properties: {
@@ -60,14 +60,16 @@ build.supportedBrowsers().forEach(edition => {
     //   ascii_only: true
     // },
     compress: {
-      module: true,
+      module: edition === 'current',
       keep_fnames: true,
       keep_classnames: true,
       drop_console: true,
       passes: 10,
       warnings: true
     }
-  }))
+  }
+  
+  plugins.push(terser(terserCfg))
 
   configuration.push({
     input,
@@ -77,11 +79,14 @@ build.supportedBrowsers().forEach(edition => {
       file: `${outdir}/${build.name}-${build.version}${edition !== 'current' ? '-' + edition : ''}.min.js`,
       format: edition === 'current' ? 'esm' : 'iife',
       sourcemap: true,
-      name: build.pkg.name.split('/').pop() // namespace applied to window object
+      name: build.name // namespace applied to window object
     }
   })
 
   if (edition === 'current') {
+    plugins.pop()
+    terserCfg.module = false
+    // plugins.push(terser(terserCfg))
     configuration.push({
       input,
       plugins,
@@ -90,7 +95,7 @@ build.supportedBrowsers().forEach(edition => {
         file: `${outdir}/${build.name}-${build.version}-global.min.js`,
         format: 'iife',
         sourcemap: true,
-        name: build.pkg.name.split('/').pop() // namespace applied to window object
+        name: build.name // namespace applied to window object
       }
     })
   }

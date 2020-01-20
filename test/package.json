@@ -11,9 +11,9 @@
     "browser": "npm run build:test:browser && node ./unit/prepareKarmaBrowserSuite.js && karma start ./unit/karma.conf.cjs",
     "build:test:node": "cd ../build && npm run test:node && cd ../test",
     "build:test:browser": "cd ../build && npm run test:browser && cd ../test",
-    "browser:manual": "npm run build:test:browser && node ./unit/prepareManualTestEnvironment.js && cd .testsuite",
+    "browser:manual": "npm run clean && npm run build:test:browser && node ./unit/prepareKarmaBrowserSuite.js && node ./unit/prepareManualTestEnvironment.js && cd .testsuite",
     "browser:manual:open": "npm run browser:manual && cd .testsuite && fenix open",
-    "reset": "node ../build/lib/reset.js"
+    "clean": "node ../build/lib/reset.js"
   },
   "author": "",
   "type": "module",

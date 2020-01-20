@@ -1,7 +1,8 @@
 import path from 'path'
 import fs from 'fs'
 import Build from '../../build/lib/build.js'
-import { deepStrictEqual } from 'assert'
+import browserify from 'browserify'
+import { execSync } from 'child_process'
 
 const build = new Build()
 const pkg = JSON.parse(fs.readFileSync('../package.json').toString())
@@ -17,7 +18,6 @@ options.sort((a, b) => {
 })
 
 if (pkg.main) {
-  console.log(pkg.main)
   options.push(`<option value="./${pkg.main}">import ${name} from './${pkg.main}' (Raw Source)</option>`)
 }
 
@@ -53,3 +53,21 @@ build.walk('../src').forEach(file => {
 
   fs.writeFileSync(input.replace(path.join(cwd, '..'), out), content)
 })
+
+// Add the libraries from the test suite
+if (fs.existsSync(path.resolve('./.testsuite/browser-test.js'))) {
+  const content = fs.readFileSync('./.testsuite/browser-test.js').toString()
+  const importStatements = content.match(/_interop[\S]+\(require\(['"]([\S]+)['"]/g)
+  const names = new Set()
+  importStatements.forEach(i => i.match(/_interop[\S]+\(require\(['"]([\S]+)['"]/).slice(1).forEach(name => names.add(name)))
+
+  if (names.size > 0) {
+    // TODO: Use the browserify API to bundle
+    // const bundle = fs.createWriteStream(path.resolve('./.testsuite/bundle.js'))
+    const cmd = `../node_modules/browserify/bin/cmd.js -r ${Array.from(names).join('-r ')} > "${path.resolve('./.testsuite/bundle.js')}"`
+    execSync(cmd, { stdio: 'inherit' })
+    // console.log(bundle)
+    // browserify(Array.from(names)).bundle().on('data', chunk => bundle.write(chunk)).on('end', () => console.log('done'))
+    console.log(`Generated browser references for: ${Array.from(names).join(', ')}.`)
+  }
+}

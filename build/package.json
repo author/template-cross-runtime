@@ -8,7 +8,7 @@
     "test:node": "rollup -c rollup.test.node.config.js",
     "test:browser": "rollup -c rollup.test.browser.config.js",
     "node": "rollup -c rollup.node.config.js && node ./lib/node-package.js",
-    "reset": "cd ../ && node ./build/lib/reset.js"
+    "clean": "cd ../ && node ./build/lib/reset.js"
   },
   "author": "",
   "private": true,

@@ -1,20 +1,20 @@
 export default class Calculator {
-  displayEnvironment () {
+  get env () {
     /* node-only */
-    process.stdout.write('Node.js')
+    return `Node ${process.version}`
     /* end-node-only */
     /* browser-only */
-    console.log('Browser')
+    return 'Browser: ' + navigator.platform
     /* end-browser-only */
   }
 
-  sum () {
+  summation () {
     let total = 0
     Array.from(arguments).forEach(number => total += number)
     return total
   }
 
-  avg () {
-    return this.sum(...arguments)/arguments.length
+  average () {
+    return this.summation(...arguments)/arguments.length
   }
 }

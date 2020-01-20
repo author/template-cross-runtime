@@ -1,17 +1,17 @@
 import SimpleCalculator from './lib/calc.js'
 
-const Calc = new SimpleCalculator()
+const calc = new SimpleCalculator()
 
 export default class Calculator {
   static add () {
-    return Calc.sum(...arguments)
+    return calc.summation(...arguments)
   }
 
   static avg () {
-    return Calc.avg(...arguments)
+    return calc.average(...arguments)
   }
 
-  static env () {
-    Calc.displayEnvironment()
+  static get env () {
+    return calc.env
   }
 }
