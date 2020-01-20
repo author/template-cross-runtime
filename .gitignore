@@ -1,0 +1,11 @@
+*.log
+.*
+!.github
+!.gitignore
+!.npmignore
+!.dockerignore
+!.browserlistrc
+package-lock.json
+node_modules
+test/package-lock.json
+build/package-lock.json
