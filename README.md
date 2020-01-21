@@ -53,9 +53,7 @@ What you're patiently waiting for is primarily Babel, Rollup, & Karma. There are
 
 This stuff is complicated, but we do wish some of the many modules would help [keep npm fit](https://blog.author.io/npm-needs-a-personal-trainer-537e0f8859c6).
 
-<div style="display: flex; justify-content:center;">
-<img src="https://static.coreybutler.com/template-cross-runtime/fatfiles.png" alt="Whining Meme" style="max-height:350px;"/>
-</div>
+![Whining Meme](https://static.coreybutler.com/template-cross-runtime/fatfiles2.png)
 
 ### Step 2: Define Your Project
 
