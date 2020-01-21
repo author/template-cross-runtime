@@ -53,7 +53,7 @@ What you're patiently waiting for is primarily Babel, Rollup, & Karma. There are
 
 This stuff is complicated, but we do wish some of the many modules would help [keep npm fit](https://blog.author.io/npm-needs-a-personal-trainer-537e0f8859c6).
 
-![Whining Meme](https://static.coreybutler.com/template-cross-runtime/fatfiles2.jpg)
+![Whining Meme](https://static.coreybutler.com/template-cross-runtime/fatfiles2.jpg?updated=202021011334)
 
 ### Step 2: Define Your Project
 
