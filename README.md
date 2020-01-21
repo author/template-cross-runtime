@@ -10,12 +10,23 @@ This template/workflow is designed for **ES Modules**, i.e. **building _librarie
 
 ### Core Concepts
 
-- Build (Transpile, Minification)
-- Unit Testing
-- Syntax Testing
-- Manual Testing
-- Compatibility Reporting
-- Packaging (for npm)
+|Concept    |Purpose    |Tooling    |
+|-----------|-----------|-----------|
+| Build   | Runtime Compatibility | Transpilation (Babel), Minification (Terser) |
+| Unit Testing | TDD | TAP (tape), Karma |
+| Syntax Testing | Dev Standards | StandardJS |
+| Manual Testing | Troubleshooting | Custom Web Runtime |
+
+Several reports can be generated to help produce a reliable development release cadence.
+
+|Name  |Command  | Purpose |
+|------|---------|---------|
+| Syntax | `npm run report:syntax` | Maintaining consistent standards throughout the code base.
+| Compatibility | `npm run report:compat` | Identify any incompatibilities in the supported runtimes (Node/Browser) |
+| Package | `npm run report:package` | Understand what is being released. |
+| Coverage* | HELP WANTED | Understand how much of the code base has actually been tested. |
+
+*Code coverage doesn't work well when testing transpiled/minified code. Code coverage tools currently run, but produce no output (very clearly throwing silent errors).
 
 ## Getting Started
 
