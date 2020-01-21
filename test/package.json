@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm test",
     "test": "echo test",
-    "node": "npm run build:test:node && tap --no-esm --cov --coverage-report=lcov -r source-map-support/register -R spec ./unit/*-*/**/*-*.js",
+    "node": "npm run build:test:node && tap --no-esm --no-coverage -r source-map-support/register -R spec ./unit/*-*/**/*-*.js",
     "browser": "npm run build:test:browser && node ./unit/prepareKarmaBrowserSuite.js && karma start ./unit/karma.conf.cjs",
     "build:test:node": "cd ../build && npm run test:node && cd ../test",
     "build:test:browser": "cd ../build && npm run test:browser && cd ../test",

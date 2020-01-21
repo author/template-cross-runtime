@@ -24,8 +24,5 @@
   "type": "module",
   "author": "",
   "private": true,
-  "license": "Unlicense",
-  "dependencies": {
-    "karma-coverage-istanbul-reporter": "^2.1.1"
-  }
+  "license": "Unlicense"
 }
