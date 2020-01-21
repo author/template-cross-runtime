@@ -8,6 +8,7 @@
     "test:node": "rollup -c rollup.test.node.config.js",
     "test:browser": "rollup -c rollup.test.browser.config.js",
     "node": "rollup -c rollup.node.config.js && node ./lib/node-package.js",
+    "browser": "npm run clean && rollup -c rollup.browser.config.js && node ./lib/browser-package.js",
     "clean": "cd ../ && node ./build/lib/reset.js"
   },
   "author": "",

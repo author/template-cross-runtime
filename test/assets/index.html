@@ -230,6 +230,23 @@
           run: () => window.run()
         })
 
+        ide.addAction({
+          // An unique identifier of the contributed action.
+          id: 'execute-suite',
+
+          // A label of the action that will be presented to the user.
+          label: 'Execute Test Suite',
+
+          // An optional array of keybindings for the action.
+          keybindings: [
+            monaco.KeyMod.Alt | monaco.KeyCode.Enter,
+          ],
+
+          // Method that will be executed when the action is triggered.
+          // @param editor The editor instance is passed in as a convinience
+          run: () => window.runUnitTests()
+        })
+
         ide.onDidChangeModelContent(event => localStorage.setItem('test_code', ide.getValue()))
 
         const section = document.querySelector('#console section') 
@@ -314,26 +331,28 @@
         })
       })
     
+      let ___unitTestCode___
       fetch('./browser-test.js')
         .then(r => r.text())
         .then(code => {
+          ___unitTestCode___ = code
           // Enable the unit test button
-          let testBtn = document.querySelector('button.unittests')
-
           testBtn.classList.remove('hidden')
-
-          testBtn.addEventListener('click', e => {
-            clearScripts()
-            testBtn.classList.add('running')
-            loadScript('./bundle.js', () => {
-              Function(code)()
-              testBtn.classList.remove('running')
-            })
-          })
+          testBtn.addEventListener('click', window.runUnitTests)
         })
         .catch(e => console.error(e))
 
         window.__change_script__ = false
+
+        let testBtn = document.querySelector('button.unittests')
+        window.runUnitTests = () => {
+          clearScripts()
+          testBtn.classList.add('running')
+          loadScript('./bundle.js', () => {
+            Function(___unitTestCode___)()
+            testBtn.classList.remove('running')
+          })
+        }
     </script>
 </body>
 </html>

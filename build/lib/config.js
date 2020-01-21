@@ -18,7 +18,18 @@ const config = {
   testOutput: data.testOutput,
   npmOrganization: npmorg,
   external: data.external,
-  banner
+  banner,
+  terser: data.terser || {
+    compress: {
+      keep_fnames: true,
+      keep_classnames: true,
+      drop_console: true,
+      passes: 8,
+      warnings: true
+    }
+  }
 }
 
+config.terser.output = config.terser.output || {}
+config.terser.output.preamble = config.banner
 export { config as default }

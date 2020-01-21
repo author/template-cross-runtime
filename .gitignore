@@ -5,6 +5,7 @@
 !.npmignore
 !.dockerignore
 !.browserlistrc
+!.eslintrc
 package-lock.json
 node_modules
 test/package-lock.json

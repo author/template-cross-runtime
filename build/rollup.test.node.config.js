@@ -44,6 +44,7 @@ configuration.push({
   input,
   plugins,
   output: {
+    banner: config.banner,
     file: output,
     format: 'esm',
     sourcemap: true,

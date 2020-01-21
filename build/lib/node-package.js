@@ -123,9 +123,3 @@ fs.copyFileSync('../LICENSE', `${outdir}-legacy/LICENSE`)
 // Add README
 fs.writeFileSync(`${outdir}-legacy/README.md`, `# ${prodpkg.name} ${prodpkg.version} (Legacy CommonJS Variant)\n\nPlease see [${build.homepage}](${build.homepage}).\n\nGenerated on ${new Date()}.`)
 
-// Apply banner to all JS files
-build.walk(config.nodeOutput).forEach(filepath => {
-  if (path.extname(filepath) === '.js') {
-    fs.writeFileSync(filepath, config.banner + '\n' + fs.readFileSync(filepath).toString())
-  }
-})

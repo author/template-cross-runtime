@@ -9,13 +9,11 @@ import babel from 'rollup-plugin-babel'
 import { install } from 'source-map-support'
 install()
 
-const pkg = JSON.parse(fs.readFileSync('../package.json'))
-
-// Identify source file
-const input = path.resolve(`../${pkg.main||'../src/index.js'}`)
-
 // Add custom functionality
 const build = new Build()
+
+// Identify source file
+const input = path.resolve(`../${build.pkg.main||'../src/index.js'}`)
 
 // Configure metadata for the build process.
 const rootdir = config.nodeOutput // Main output directory
@@ -25,6 +23,11 @@ let configuration = [] // Rollup Configurations
 // 1. Clean prior builds
 fs.rmdirSync(rootdir, { recursive: true })
 
+let terserCfg = config.terser
+terserCfg.module = true
+terserCfg.mangle = { properties: true }
+// terser.compress.ecma = 6
+
 // Identify plugins
 const plugins = [
   build.only('node'),
@@ -32,23 +35,12 @@ const plugins = [
   babel({
     presets: [['@babel/preset-env', { targets: { node: true } }]],
     plugins: [
-      ['@babel/plugin-proposal-class-properties', { 'loose': false }],
-      ['@babel/plugin-proposal-private-methods', { 'loose': false }]
+      ['@babel/plugin-proposal-class-properties', { loose: false }],
+      ['@babel/plugin-proposal-private-methods', { loose: false }]
     ],
     externalHelpersWhitelist: ['classPrivateFieldSet', 'classPrivateFieldGet', 'classPrivateMethods']
   }),
-  terser({
-    module: true,
-    mangle: {
-      properties: true
-    },
-    compress: {
-      drop_console: true,
-      passes: 8,
-      warnings: true,
-      ecma: 6
-    }
-  })
+  terser(terserCfg)
 ]
 
 // 2. Build Node Production Package: Standard (Minified/Munged)
@@ -57,7 +49,7 @@ configuration.push({
   input,
   plugins,
   output: {
-    // banner: config.banner,
+    banner: config.banner,
     file: `${outdir}/${build.name}-${build.version}.min.js`,
     format: 'esm',
     sourcemap: true
@@ -70,7 +62,7 @@ configuration.push({
   input,
   plugins,
   output: {
-    // banner: config.banner,
+    banner: config.banner,
     file: `${outdir}-legacy/${build.name}-${build.version}.min.js`,
     format: 'cjs',
     sourcemap: true

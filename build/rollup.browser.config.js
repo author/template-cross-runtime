@@ -2,8 +2,8 @@ import path from 'path'
 import fs from 'fs'
 import config from './lib/config.js'
 import Build from './lib/build.js'
-import babel from 'rollup-plugin-babel'
 import { terser } from 'rollup-plugin-terser'
+import babel from 'rollup-plugin-babel'
 
 // Install source map support
 import { install } from 'source-map-support'
@@ -13,20 +13,19 @@ install()
 const build = new Build()
 
 // Identify source file
-const input = path.resolve(`../${build.pkg.main}`)
+const input = path.resolve(`../${build.pkg.main || '../src/index.js'}`)
 
 // Configure metadata for the build process.
-const rootdir = path.join(config.testOutput, '.browser') // Main output directory
+const rootdir = config.browserOutput // Main output directory
 let outdir = rootdir // Active output directory
 let configuration = [] // Rollup Configurations
 
-// Pre-process: Check if the build actually needs to be updated.
 if (build.isUnnecessaryBuild(input, outdir)) {
   process.exit(0)
 }
 
 // 1. Clean prior builds
-// fs.rmdirSync(rootdir, { recursive: true })
+fs.rmdirSync(rootdir, { recursive: true })
 
 // Identify standard plugins
 const globalplugins = [
@@ -34,6 +33,7 @@ const globalplugins = [
 ]
 
 // 2. Build Browser Production Package: Standard (Minified/Munged)
+outdir += `/browser-${build.name}`
 build.supportedBrowsers().forEach(edition => {
   console.log(`Generating ${edition} browser code.`)
   const plugins = globalplugins.slice()
@@ -43,15 +43,14 @@ build.supportedBrowsers().forEach(edition => {
     presets: [['@babel/env']],
     plugins: [
       ['@babel/plugin-transform-flow-strip-types'],
-      ['@babel/plugin-proposal-class-properties', { loose: false }],
-      ['@babel/plugin-proposal-private-methods', { loose: false }]
+      ['@babel/plugin-proposal-class-properties'/*, { 'loose': false } */],
+      ['@babel/plugin-proposal-private-methods'/*, { 'loose': false } */]
     ]
   }))
 
   let terserCfg = config.terser
   terserCfg.module = edition === 'current'
-  terserCfg.compress.module = edition === 'current'
-  
+
   plugins.push(terser(terserCfg))
 
   configuration.push({

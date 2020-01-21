@@ -6,14 +6,15 @@
   "scripts": {
     "start": "npm test",
     "test": "echo test",
-    "syntax": "./syntax/validator.js --source ../src/**/*.js --config ./package.json --parser babel-eslint --verbose | snazzy",
-    "node": "npm run build:test:node && tap --no-esm --no-coverage-report -r source-map-support/register -R spec ./unit/*-*/**/*-*.js",
+    "node": "npm run build:test:node && tap --no-esm --cov --coverage-report=lcov -r source-map-support/register -R spec ./unit/*-*/**/*-*.js",
     "browser": "npm run build:test:browser && node ./unit/prepareKarmaBrowserSuite.js && karma start ./unit/karma.conf.cjs",
     "build:test:node": "cd ../build && npm run test:node && cd ../test",
     "build:test:browser": "cd ../build && npm run test:browser && cd ../test",
     "browser:manual": "npm run clean && npm run build:test:browser && node ./unit/prepareKarmaBrowserSuite.js && node ./unit/prepareManualTestEnvironment.js && cd .testsuite",
     "browser:manual:open": "npm run browser:manual && cd .testsuite && fenix open",
-    "clean": "node ../build/lib/reset.js"
+    "clean": "node ../build/lib/reset.js",
+    "syntax": "./syntax/validator.js --source ../src/**/*.js --config ./package.json --parser babel-eslint --verbose | snazzy",
+    "compat:browser": "echo 'Building...' && cd ../build && npm run browser && echo 'Testing modern browser compatibility...' && cd ../test && BROWSERSLIST_ENV=current BROWSERSLIST_CONFIG=../build/.browserslistrc eslint -c ./.eslintrc ../.dist/browser/browser-*/*.min.js --no-ignore && echo Done."
   },
   "author": "",
   "type": "module",
