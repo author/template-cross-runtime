@@ -18,10 +18,10 @@ This template addresses the following disciplines:
 
 |Concept    |Purpose    |Tooling    |
 |-----------|-----------|-----------|
-| Build   | Release | Transpiler (Babel), Minifier (Terser) |
-| Unit Testing | Test Driven Development (TDD) | TAP (tape), Karma |
-| Syntax Testing | Standards | StandardJS |
-| Manual Testing | Troubleshooting | Custom Web Environment |
+| Build   | Release | Transpiler ([Babel](http://babeljs.io/)), Minifier ([Terser](https://terser.org/)) |
+| Unit Testing | [Test Driven Development](https://en.wikipedia.org/wiki/Test-driven_development) (TDD) | [TAP](https://en.wikipedia.org/wiki/Test_Anything_Protocol) Standard ([tape](https://github.com/substack/tape)), [Karma](http://karma-runner.github.io/4.0/index.html) |
+| Syntax Testing | Standards | [StandardJS](https://standardjs.com/) |
+| Manual Testing | Troubleshooting | [Custom Web Environment](#running-manual-browser-tests) |
 
 Several reports can be generated to help you confidently advance your project.
 
@@ -265,7 +265,7 @@ The `source-map-support/register.js` import automatically includes support for t
 
 The `import test from 'tape'` includes the tape library.
 
-`import mylib from '../../.node/index.js'` is an important import that imports the code you write. The `../../.node/index.js` part **does not change**. The test runners are smart enough to dynamically parse this import and construct the appropriate import for browsers and Node, depending on the environment you're running in. In other words, the only part you need to worry about is the `mylib` part. This should be the name defined in package.json (without the npm orgainzation name if you have one).
+`import mylib from '../../.node/index.js'` is an special import that adds your source code to the test. The `../../.node/index.js` part **does not change**. The test runners are smart enough to dynamically parse this import and construct the appropriate import for browsers and Node, depending on the environment you're running in. In other words, the only part you need to worry about is the `mylib` part. This should can be anything, but is often the same name defined in the main/root `package.json` file (without prefixes).
 
 This is what a simple unit test looks like:
 
@@ -285,29 +285,74 @@ test('Sanity Checks', t => {
 ```
 ---
 
-This document is unnecessary once you're setup, but you might want to rename it to `BUILD.md` and keep it around for others who need to work on the project.
+## Writing Code
 
----
+One of the unique features of this workflow is the ability to strip Node/browser code from a build. Consider the following example:
 
+```javascript
+export default class MyClass {
+  get env () {
+    /* node-only */
+    return `Node ${process.version}`
+    /* end-node-only */
+    /* browser-only */
+    return 'Browser: ' + navigator.platform
+    /* end-browser-only */
+  }
+}
+```
 
-### Building for Node.js
+When `npm run build:node` is executed, the resulting (pre-minified) code would be:
 
+```javascript
+export default class MyClass {
+  get env () {
+    /* node-only */
+    return `Node ${process.version}`
+    /* end-node-only */
+  }
+}
+```
+
+When `npm run build:browser` is executed, the resulting (pre-minified) code would be:
+
+```javascript
+export default class MyClass {
+  get env () {
+    /* browser-only */
+    return 'Browser: ' + navigator.platform
+    /* end-browser-only */
+  }
+}
+```
+
+As a result, developers who use the library could write the following code and expect it to successfully run in Node and browsers:
+
+```javascript
+import MyClass from './path/to/myclass.js'
+
+const example = new MyClass()
+
+console.log(example.env)
+```
+
+**ECMAScript Support**
+
+This template supports all current ECMAScript features. Select stage 3 features may be supported as they evolve to final format (stage 4).
+
+Current Stage 3 Support:
+
+- Private/public class attributes and methods.
+
+## Future Considerations
+
+We're working on [metadoc](https://github.com/author/metadoc) and [metadoc.io](https://metadoc.io), with the intention of autogenerating documentation from libraries. This is not implemented yet though.
+
+We're seeking help to create a containerized/Docker version of this template.
 
 ## Review
 
-1. Build (Transpile/Minify)
-    - ECMAScript Final Support
-    - ECMAScript Stage 3 Example Support
-    - Uses Babel for Transpilation
-1. Testing
-    - Unit Testing
-    - Syntax Testing
-    - Compatibility Testing
-1. Unit Testing
-    - Uses [TAP Standard](https://en.wikipedia.org/wiki/Test_Anything_Protocol), leveraging the [tape library](https://github.com/substack/tape) in browsers and Node.js
-    - Node
-    - Browsers: [TAP] + Karma Test Runner
-        - _Includes automatic-preparation of Karma._
+This document is unnecessary once you're setup, but you might want to rename it to `BUILD.md` and keep it around for others who need to work on the project.
 
 1. Build Processes
     - `npm run build`
@@ -324,25 +369,3 @@ This document is unnecessary once you're setup, but you might want to rename it 
     - `npm run syntax`
     - `npm run compatibility`
     - Auto-prepares Karma Test Runner (Browser)
-
-## Getting Started
-
-
-
-1. Run `npm run setup` to setup the initial environments. Run `npm run resetup` if you need to clear/start again.
-
-1. Modify the `package.json` file's name, description, author, license, and anything else your project needs. By default, packages are set to "private" to prevent to prevent publishing to npm. This should be removed if you intend to publish to a registry.
-
-## Github Actions
-
-TODO: Uses Autotagger
-TODO: Instructions (or command) for supporting auto-publishing on npm.
-
-## ECMAScript Support
-
-This template supports all current ECMAScript features. Select stage 3 features may be supported as they evolve to final format (stage 4).
-
-Current Stage 3 Support:
-
-- Private/public class attributes and methods.
-
