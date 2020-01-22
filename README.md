@@ -2,7 +2,11 @@
 
 This template provides all of the common scaffolding/scripts needed to release modern/testable JavaScript libraries for multiple different runtimes (i.e. browsers and Node). 
 
-This is really just a huge head start for **creating a great development cadence** on your next project. 
+This template should be a huge head start for **creating a great development cadence** on your next project. 
+
+The goal is to provide what's needed to work with a simple workflow:
+
+![workflow](https://static.coreybutler.com/template-cross-runtime/workflow.png?updated=202021011351)
 
 ## Overview
 
@@ -45,15 +49,17 @@ nvm install 13.5.0
 nvm use 13.5.0
 ```
 
+You'll also need to [create a new repository from a template](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template), using this repo as the template. Once your repo is setup, clone it to your workstation and follow the steps below.
+
 ### Step 1: Install Dependencies
 
 Run `npm run setup` to configure the new environment. This takes a few minutes. 
 
 What you're patiently waiting for is primarily Babel, Rollup, & Karma. There are a silly number of dependencies. 
 
-This stuff is complicated, but we do wish some of the many modules would help [keep npm fit](https://blog.author.io/npm-needs-a-personal-trainer-537e0f8859c6).
+This stuff is complicated, and some modules require alot of code. Most don't. We wish some of those modules would be more prone to help [keep npm fit](https://blog.author.io/npm-needs-a-personal-trainer-537e0f8859c6).
 
-[![Whining Meme](https://static.coreybutler.com/template-cross-runtime/fatfiles2.jpg?updated=202021011334)](https://static.coreybutler.com/template-cross-runtime/fatfiles.png)
+[![Meme Whining About Big Footprints](https://static.coreybutler.com/template-cross-runtime/fatfiles2.jpg?updated=202021011334)](https://static.coreybutler.com/template-cross-runtime/fatfiles.png)
 
 ### Step 2: Define Your Project
 
@@ -118,49 +124,6 @@ npm run manually
 
 ### Step 4: Build A Release
 
-This template supports building production releases.
-
-#### Build Node Packages
-![build_node]()
-
-#### Build Browser Packages
-
-![build_browser]()
-
-### Step 5: Publish
-
-This package doesn't publish packages. It is possible to publish any of them by hand using `npm publish`. However; this is not recommended practice.
-
-_A Better Alternative:_
-
-Follow a pseudo-gitflow practice. Whenever a new Github "release" is made, publish it.
-
-To do this, use the [AutoTagger](https://github.com/marketplace/actions/autotagger) (we wrote this one too) Github action to monitor the `package.json` file in the master branch. Anytime the verison changes, the action will create a new Github release. Use your own Github action to respond to new releases and 
-
-Typically, most tests and build processes will occur on a server, using a CI/CD system of some kind. 
-
-1. Unit tests are in `test/unit/`. Tests are stored in organized directories, following a "numeric" naming syntax. 
-```
-  <##>-<name>
-    - <##>-<test>.js
-  karma.conf.cjs
-  prepareKarmaBrowserSuite.js
-  prepareManualTestEnvironment.js
-  ```
-For example, `01-sanity` contains a unit test file called `01-sanity.js`. This test
-A basic "hey it loads" sanity test exists to get you started.
-1. Run any of the following:
-    - `npm test` the entire library in all runtimes (Node + Browser)
-    - `npm run test:node` to just test in Node.
-    - `npm run test:browser` to just test in the browser (defaults to Chrome).
-    - `npm run manually` to launch a manual testing environment. This relies on [Fenix Web Server 3.0.0](https://preview.fenixwebserver.com) (free).
-1. This document is unnecessary once you're setup, but you might want to rename it to `BUILD.md` and keep it around for others who need to work on the project.
-
----
-
-
-## Build
-
 The build process transpiles, minifies, & packages code for testing and/or release.
 
 #### Configuring Builds
@@ -172,33 +135,167 @@ There is a simple build configuration file, `build/config.json`. By default, it 
   "nodeOutput": "../.dist/node",
   "browserOutput": "../.dist/browser",
   "testOutput": "../test",
-  "npmPrefix": "",
-  "external": ["os", "fs", "http", "https", "events"]
+  "npmOrganization": "",
+  "external": ["os", "fs", "......"],
+  "terser": {
+    "compress": {
+      "keep_fnames": true,
+      "keep_classnames": true,
+      "drop_console": true,
+      "passes": 8,
+      "warnings": true
+    }
+  }
 }
 ```
 
-_**`nodeOutput`**_ and _**`browserOutput`**_ are the locations where production releases are created. By default, this is a directory called `build/.dist`. The dot syntax is important because the `.gitignore` file excludes almost everything that starts with a dot from your git repo (distributions should not be committed to git).
+_**`nodeOutput`**_ and _**`browserOutput`**_ are the locations where production releases are created (relative to the `build` directory). By default, this is a directory under the root called `.dist`. The dot syntax is important because the `.gitignore` file excludes almost everything that starts with a dot from your git repo (distributions should not be committed to git).
 
 _**`testOutput`**_ is the location where temporary test directories are created. By default, this is the `test` directory. You probably shouldn't change this.
 
-_**`npmPrefix`**_ is the prefix which will be applied to any npm distributions. This supports npm organizations. For example, setting this to `@author.io` would generate an npm module named `@author.io/example` (the `/<project>` part is appended automatically).
+_**`npmOrganization`**_ is the prefix which will be applied to any npm distributions. For example, setting this to `@author.io` would generate an npm module named `@author.io/example` (the `/<project>` part is appended automatically). This _can_ be empty and you _should_ specify your own organization (if you have one).
 
-_**`external`**_ tells the bundler to consider these `import` clauses to be external dependencies (i.e. not bundled).
+_**`external`**_ tells the Rollup bundler to consider these `import` clauses to be external dependencies (i.e. not bundled). For example, `import fs from 'fs'` imports the Node.js file system module. The fs module is part of the external runtime, not your library, and therefore does not need to be bundled.
 
-The build process dynamically transpiles and minifies code whenever necessary. [Babel](https://babeljs.org) is used for transpiling. [Terser](https://terser.org/) is used to minify code. Both of these libraries can be difficult to setup, but this template does it for you. _Modifying_ the configurations for each of these tools is pretty easy. Be aware that if you choose to modify
-Build processes exist for Node.js and browsers.
+_**`terser`**_ is the configuration passed to the [Terser](https://terser.org/) minification module.
 
-### Building for Node.js
+##### Banners
 
-_Unlike_ other bundlers, this one **minifies Node code and ships a sourcemap in a separate module as a dev dependency**. This approach reduces the footprint for production use cases, without making it difficult for developers to troubleshoot module issues. We've seen reductions as high as 80%, but are more often 30-40%.
+There is a file at `build/lib/config.js` which is used to parse the `build/config.json` file. It also supports a custom banner (comments) which can be applied to the top of all code that is generated. The default template looks like this:
+
+```javascript
+let banner = 
+    `// ${pkg.name} v${pkg.version}\n` +
+    `// Copyright (c) ${new Date().getFullYear()} ${pkg.author.name||pkg.author||process.env.USER||''}\n` +
+    `// Released under the ${pkg.license||'"Unlicense"'} License.`
+```
+
+This generates code like this:
+
+```javascript
+// example v0.0.1
+// Copyright (c) 2020 cbutler
+// Released under the Unlicense License.
+...minified code goes here...
+```
+
+#### What does the build process automate for me?
+
+The build process dynamically transpiles and minifies code whenever necessary. [Babel](https://babeljs.org) is used for transpiling. Terser is used to minify code. Both of these libraries can be difficult to setup, but this template does it for you. _Modifying_ the configurations for each of these tools is pretty easy.
+
+#### Build Node Packages
+
+_Unlike_ other bundlers, this one **minifies Node code and ships a sourcemap in a separate module as a dev dependency**. This approach reduces the footprint for production use cases, without making it difficult for developers to troubleshoot module issues. We commonly see footprint reductions of 30-40%, but we've seen as high as 80% too.
+
+```sh
+npm run build:node
+```
+
+![build_node](https://static.coreybutler.com/template-cross-runtime/build-node.gif)
 
 Remember, this template is designed for using ES Modules. However; experimental support was introduced in Node 12 behind a flag. The flag was removed in Node 13, and is "natively" supported in Node 14 (April 2020). Since many users and serverless environments will still need the CommonJS `require` format, a second "legacy" package is produced to support these environments. This is not the recommended way to build for Node, but it is necessary for those who cannot upgrade.
 
 **The following packages are produced:**
 
-- `node-<name>`
+- `node-<name>` (Minified ES Module version)
+- `node-<name>-debug` (Sourcemap for ESM version)
+- `node-<name>-legacy` (Minified CommonJS "`require`" version)
+- `node-<name>-legacy-debug` (Sourcemap for CJS version)
 
- (Transpile)
+To run a Node script with sourcemap support, make sure _both_ the main package and it's debug package are installed (the debug package is a devDependency). The debug package contains the [source-map-support](https://github.com/evanw/node-source-map-support) module, which can be invoked like this:
+
+```sh
+node -r source-map-support/register myscript.js
+```
+
+#### Build Browser Packages
+
+```sh
+npm run build:browser
+```
+
+![build_browser](https://static.coreybutler.com/template-cross-runtime/build-browser.gif)
+
+Browser support is dictated by a browser's support of the ECMAScript specification. This spec changes regularly, making it difficult to consistently support all browsers all the time. In a "best effort" to keep up, this template supports two release types: "current" and "legacy".
+
+"Current" releases are built for the last 2 major versions of modern browsers.
+
+The "Legacy" release conforms to the ES6 standard and works on all browsers which fully support the ES6/ES2015 specification.
+
+> Internet Explorer only supports ES5 and is not supported by default.
+
+The browser build targets are determined using the [browserslist](https://github.com/browserslist/browserslist) project (`build/.browserslistrc`). This can be modified if the app needs to support different targets like IE.
+
+### Step 5: Consider Publishing
+
+This template does not have scripts for publishing packages. It is possible to publish any of them from the generated `.dist` directory by hand using `npm publish`. However; this is not recommended practice.
+
+_A Better Alternative:_
+
+Follow your favorite variation of the gitflow practice. Whenever a new Github "release" is made, publish it.
+
+To do this, use the [AutoTagger](https://github.com/marketplace/actions/autotagger) (we wrote this one too) Github action to monitor the `package.json` file in the master branch. Anytime the `verison` attribute changes, the action will create a new tag (i.e. Github release). Use your own Github action to respond to new releases and publish the code to your favorite Node package registry (npm, Github, etc). 
+
+___
+
+## Creating Unit Tests
+
+Unit tests are in the `test/unit/` directory. Tests are stored in organized directories, following a "numeric" naming syntax. 
+```
+  <##>-<name>
+    - <##>-<test>.js
+  karma.conf.cjs
+  prepareKarmaBrowserSuite.js
+  prepareManualTestEnvironment.js
+  ```
+
+For example, `01-sanity` contains a unit test file called `01-sanity.js`. This test is a basic "hey it exists" sanity check to get you started.
+
+Tests are written using the [tape](https://github.com/substack/tape) library. This is a TAP library, which is supported in both Node and browsers (via browserify, from the same author of tape).
+
+All tests start with the same 3 imports, plus anything else you need to test your library.
+
+```javascript
+import 'source-map-support/register.js'
+import test from 'tape'
+import mylib from '../../.node/index.js'
+```
+
+The `source-map-support/register.js` import automatically includes support for the sourcemaps this template creates. The test runners are all configured to replace this with the appropriate code in browsers and Node.
+
+The `import test from 'tape'` includes the tape library.
+
+`import mylib from '../../.node/index.js'` is an important import that imports the code you write. The `../../.node/index.js` part **does not change**. The test runners are smart enough to dynamically parse this import and construct the appropriate import for browsers and Node, depending on the environment you're running in. In other words, the only part you need to worry about is the `mylib` part. This should be the name defined in package.json (without the npm orgainzation name if you have one).
+
+This is what a simple unit test looks like:
+
+```javascript
+import 'source-map-support/register.js'
+import test from 'tape'
+import mylib from '../../.node/index.js'
+
+test('Sanity Checks', t => {
+  t.pass('Template tests are available.')
+  t.ok(calc !== undefined, 'Library is instantiated.')
+  
+  t.ok(calc.add(1,4,4) === 9, `Adding numbers totals 9.`)
+  t.ok(calc.avg(1,4,4) === 3, `Averaging numbers totals 3.`)
+  t.end()
+})
+```
+---
+
+This document is unnecessary once you're setup, but you might want to rename it to `BUILD.md` and keep it around for others who need to work on the project.
+
+---
+
+
+### Building for Node.js
+
+
+## Review
+
+1. Build (Transpile/Minify)
     - ECMAScript Final Support
     - ECMAScript Stage 3 Example Support
     - Uses Babel for Transpilation
@@ -230,7 +327,7 @@ Remember, this template is designed for using ES Modules. However; experimental 
 
 ## Getting Started
 
-Create a new repository, [using this one as a template](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template).
+
 
 1. Run `npm run setup` to setup the initial environments. Run `npm run resetup` if you need to clear/start again.
 
@@ -249,14 +346,3 @@ Current Stage 3 Support:
 
 - Private/public class attributes and methods.
 
-## Browsers
-
-Browser support is dictated by a browser's support of the ECMAScript specification. This spec changes regularly, making it difficult to consistently support all browsers all the time. In a "best effort" to keep up, this template supports two release types: "current" and "legacy".
-
-"Current" releases are built for the last 2 major versions of modern browsers.
-
-The "Legacy" release conforms to the ES6 standard and works on all browsers which fully support the ES6/ES2015 specification.
-
-> Internet Explorer only supports ES5 and is not supported by default.
-
-The browser build targets are determined using the [browserslist](https://github.com/browserslist/browserslist) project (`build/.browserslistrc`). This can be modified if the app needs to support different targets.
