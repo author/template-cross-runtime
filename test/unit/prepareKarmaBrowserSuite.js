@@ -1,8 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 // Rollup is used from the build package instead of requiring 2 copies of rollup to be installed in node_modules.
-import multi from '@rollup/plugin-multi-entry'
-import rollup from 'rollup'
+import multi from '../../build/node_modules/@rollup/plugin-multi-entry/dist/index.js'
+import rollup from '../../build/node_modules/rollup/dist/rollup.js'
 import MagicString from 'magic-string'
 import diff from 'diff'
 

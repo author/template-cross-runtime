@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm test",
-    "test": "echo test",
+    "test": "npm run node && npm run browser",
     "node": "npm run build:test:node && tap --no-esm --no-coverage -r source-map-support/register -R spec ./unit/*-*/**/*-*.js",
     "browser": "npm run build:test:browser && node ./unit/prepareKarmaBrowserSuite.js && karma start ./unit/karma.conf.cjs",
     "build:test:node": "cd ../build && npm run test:node && cd ../test",
@@ -25,7 +25,6 @@
     "@author.io/arg": "^1.1.0",
     "@babel/core": "^7.7.5",
     "@babel/preset-env": "^7.7.7",
-    "@rollup/plugin-multi-entry": "^3.0.0",
     "babel-eslint": "^10.0.3",
     "browserify": "^16.5.0",
     "diff": "^4.0.2",

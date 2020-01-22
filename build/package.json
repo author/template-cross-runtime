@@ -7,8 +7,9 @@
     "test": "echo \"See the test directory for library testing utilities.\"",
     "test:node": "rollup -c rollup.test.node.config.js",
     "test:browser": "rollup -c rollup.test.browser.config.js",
+    "all": "npm run clean && npm run browser && npm run node",
     "node": "rollup -c rollup.node.config.js && node ./lib/node-package.js",
-    "browser": "npm run clean && rollup -c rollup.browser.config.js && node ./lib/browser-package.js",
+    "browser": "rollup -c rollup.browser.config.js && node ./lib/browser-package.js",
     "clean": "cd ../ && node ./build/lib/reset.js"
   },
   "author": "",
@@ -27,6 +28,7 @@
     "@babel/plugin-proposal-private-methods": "^7.7.4",
     "@babel/plugin-transform-flow-strip-types": "^7.7.4",
     "@babel/preset-env": "^7.7.7",
+    "@rollup/plugin-multi-entry": "^3.0.0",
     "browserslist": "^4.8.2",
     "rollup": "^1.27.13",
     "rollup-plugin-babel": "^4.3.3",
