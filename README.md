@@ -353,7 +353,7 @@ The compatibility report builds a release and identifies any potential problems 
 npm run report:compat
 ```
 
-![Compatibility](https://static.coreybutler.com/template-cross-runtime/compat.cast)
+![Compatibility](https://static.coreybutler.com/template-cross-runtime/compat.gif)
 
 Notice the section which looks like:
 
@@ -369,8 +369,6 @@ The syntax report will highlight any syntax problems in the source code. This us
 ```sh
 npm run report:compat
 ```
-
-
 
 ## Future Considerations
 
