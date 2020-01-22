@@ -14,7 +14,7 @@
     "browser:manual:open": "npm run browser:manual && cd .testsuite && fenix open",
     "clean": "node ../build/lib/reset.js",
     "syntax": "./syntax/validator.js --source ../src/**/*.js --config ./package.json --parser babel-eslint --verbose | snazzy",
-    "compat:browser": "echo 'Building...' && cd ../build && npm run browser && echo 'Testing modern browser compatibility...' && cd ../test && BROWSERSLIST_ENV=current BROWSERSLIST_CONFIG=../build/.browserslistrc eslint -c ./.eslintrc ../.dist/browser/browser-*/*.min.js --no-ignore && echo Done."
+    "compat": "echo 'Building...' && cd ../build && npm run browser && echo 'Testing modern browser compatibility...' && cd ../test && BROWSERSLIST_ENV=current BROWSERSLIST_CONFIG=../build/.browserslistrc eslint -c ./.eslintrc ../.dist/browser/browser-*/*.min.js --no-ignore && echo Done."
   },
   "author": "",
   "type": "module",

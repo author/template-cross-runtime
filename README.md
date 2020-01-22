@@ -29,7 +29,6 @@ Several reports can be generated to help you confidently advance your project.
 |------|---------|---------|
 | Syntax | `npm run report:syntax` | Maintaining consistent standards throughout the code base.
 | Compatibility | `npm run report:compat` | Identify any incompatibilities in the supported runtimes (Node/Browser) |
-| Release | `npm run report:preview` | Understand what is being released. |
 | Coverage* | HELP WANTED | Understand how much of the code base has actually been tested. |
 
 _*Code coverage doesn't work well when testing transpiled/minified code. Tools like nyc/instanbul currently run, but produce no output (very clearly throwing silent errors)._
@@ -343,6 +342,35 @@ This template supports all current ECMAScript features. Select stage 3 features 
 Current Stage 3 Support:
 
 - Private/public class attributes and methods.
+
+## Reports
+
+#### _Compatibility_
+
+The compatibility report builds a release and identifies any potential problems within browsers. A blank/empty report means "no incompatibilities". Incompatibilities are reported as errors, as shown here:
+
+```sh
+npm run report:compat
+```
+
+![Compatibility](https://static.coreybutler.com/template-cross-runtime/compat.cast)
+
+Notice the section which looks like:
+
+```sh
+.dist/browser/browser-example/example-0.0.1-global.min.js
+  4:461  error  Array.from() is not supported in Safari 5.1  compat/compat
+```
+
+#### _Syntax_
+
+The syntax report will highlight any syntax problems in the source code. This uses StandardJS rules.
+
+```sh
+npm run report:compat
+```
+
+
 
 ## Future Considerations
 

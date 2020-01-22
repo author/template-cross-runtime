@@ -19,7 +19,8 @@
     "again": "cd ./test && npm run browser:manual",
     "setup": "echo \"Installing build and test dependencies...\" && node -e \"let fs=require('fs');let path=require('path');fs.mkdirSync(path.resolve('node_modules'));fs.symlinkSync(path.resolve('./node_modules'), path.resolve('./build/node_modules'));fs.symlinkSync(path.resolve('./node_modules'), path.resolve('./test/node_modules'));\" && cd ./build && npm i --no-package-lock && cd ../test && npm i --no-package-lock && echo Template Setup Complete.",
     "resetup": "node -e \"let fs=require('fs'),path=require('path');fs.unlinkSync(path.resolve('./build/node_modules'));fs.unlinkSync(path.resolve('./test/node_modules'));fs.rmdirSync(path.resolve('./node_modules'), { recursive: true });\" && npm run setup",
-    "report:compat": "",
+    "report:compat": "cd ./test && npm run compat",
+    "report:syntax": "cd ./test && npm run syntax",
     "report:preview": "npm pack --dry-run && echo \"==============================\" && echo \"This report shows what will be published to the module registry. Pay attention to the tarball contents and assure no sensitive files will be published.\""
   },
   "type": "module",
