@@ -64,7 +64,7 @@ if (fs.existsSync(path.resolve('./.testsuite/browser-test.js'))) {
   if (names.size > 0) {
     // TODO: Use the browserify API to bundle
     // const bundle = fs.createWriteStream(path.resolve('./.testsuite/bundle.js'))
-    const cmd = `../node_modules/browserify/bin/cmd.js -r ${Array.from(names).join('-r ')} > "${path.resolve('./.testsuite/bundle.js')}"`
+    const cmd = `./node_modules/browserify/bin/cmd.js -r ${Array.from(names).join('-r ')} > "${path.resolve('./.testsuite/bundle.js')}"`
     execSync(cmd, { stdio: 'inherit' })
     // console.log(bundle)
     // browserify(Array.from(names)).bundle().on('data', chunk => bundle.write(chunk)).on('end', () => console.log('done'))
