@@ -5,6 +5,7 @@ import multi from '../../build/node_modules/@rollup/plugin-multi-entry/dist/inde
 import rollup from '../../build/node_modules/rollup/dist/rollup.js'
 import MagicString from 'magic-string'
 import diff from 'diff'
+import BrowsersList from '../../build/node_modules/browserslist/index.js'
 
 const config = JSON.parse(fs.readFileSync('../build/config.json'))
 const pkg = JSON.parse(fs.readFileSync('../package.json'))

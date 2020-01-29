@@ -6,8 +6,10 @@
 !.dockerignore
 !.browserlistrc
 !.eslintrc
+!.*.yml
 package-lock.json
 node_modules
 test/package-lock.json
 build/package-lock.json
 *.cast
+*.tar.gz

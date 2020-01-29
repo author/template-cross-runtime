@@ -119,6 +119,12 @@ Troubleshooting errors in an automated test runner can be difficult. Instead of 
 npm run manually
 ```
 
+**If you run into the following notice...**
+
+> There are no servers using this directory as a web root.
+
+Navigate to the `test` directory and run `fenix start --force`. This will create a new Fenix Web Server for your manual test environment.
+
 ![test_manually](https://static.coreybutler.com/template-cross-runtime/manual.png)
 
 ### Step 4: Build A Release

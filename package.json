@@ -7,12 +7,11 @@
     "lib": "src/lib"
   },
   "scripts": {
-    "test": "cd ./test && npm test",
+    "test": "npm run test:node && npm run test:browser",
     "start": "node src/index.js",
     "build": "cd ./build && npm run all",
     "build:node": "cd ./build && npm run node",
     "build:browser": "cd ./build && npm run browser",
-    "test": "npm run test:node && npm run test:browser",
     "test:node": "cd ./test && npm run node",
     "test:browser": "cd ./test && npm run browser",
     "reset": "echo Resetting test environments && cd ./test && npm run clean && cd ../build && npm run clean",
