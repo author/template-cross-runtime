@@ -127,6 +127,8 @@ Navigate to the `test` directory and run `fenix start --force`. This will create
 
 ![test_manually](https://static.coreybutler.com/template-cross-runtime/manual.png)
 
+> There is a short vode demo of this on [YouTube](https://youtu.be/grC6aHYeWkM).
+
 ### Step 4: Build A Release
 
 The build process transpiles, minifies, & packages code for testing and/or release.
