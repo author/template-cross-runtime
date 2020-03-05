@@ -11,6 +11,7 @@
     "build:test:node": "cd ../build && npm run test:node && cd ../test",
     "build:test:browser": "cd ../build && npm run test:browser && cd ../test",
     "browser:manual": "npm run clean && npm run build:test:browser && node ./unit/prepareKarmaBrowserSuite.js && node ./unit/prepareManualTestEnvironment.js && cd .testsuite",
+    "browser:manual:create": "npm run browser:manual && cd .testsuite && fenix create",
     "browser:manual:open": "npm run browser:manual && cd .testsuite && fenix open",
     "clean": "node ../build/lib/reset.js",
     "syntax": "./syntax/validator.js --source ../src/**/*.js --config ./package.json --parser babel-eslint --verbose | snazzy",
