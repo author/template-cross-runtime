@@ -7,7 +7,7 @@
     "start": "npm test",
     "test": "npm run node && npm run browser",
     "node": "npm run build:test:node && tap --no-esm --no-coverage -r source-map-support/register -R spec ./unit/*-*/**/*-*.js",
-    "browser": "npm run build:test:browser && node ./unit/prepareKarmaBrowserSuite.js && SAUCE_USERNAME=author.io SAUCE_ACCESS_KEY=ab89db88-eab0-4e08-9360-13836a41269d BROWSERSLIST_CONFIG=../build/.browserslistrc BROWSERSLIST_ENV=current karma start ./unit/karma.conf.cjs",
+    "browser": "npm run build:test:browser && node ./unit/prepareKarmaBrowserSuite.js && BROWSERSLIST_CONFIG=../build/.browserslistrc BROWSERSLIST_ENV=current karma start ./unit/karma.conf.cjs",
     "build:test:node": "cd ../build && npm run test:node && cd ../test",
     "build:test:browser": "cd ../build && npm run test:browser && cd ../test",
     "browser:manual": "npm run clean && npm run build:test:browser && node ./unit/prepareKarmaBrowserSuite.js && node ./unit/prepareManualTestEnvironment.js && cd .testsuite",
