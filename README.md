@@ -116,6 +116,7 @@ Troubleshooting errors in an automated test runner can be difficult. Instead of 
 > This feature currently requires [Fenix Web Server 3.0.0 or higher](https://preview.fenixwebserver.com) (one of our _free_ products) to serve the web page properly.
 
 ```sh
+npm run manual:setup # this only needs to be run the first time (sets up the web server)
 npm run manually
 ```
 
