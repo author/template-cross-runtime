@@ -57,6 +57,7 @@ build.supportedBrowsers().forEach(edition => {
     input,
     plugins,
     output: {
+      extend: true,
       banner: config.banner,
       file: `${outdir}/${build.name}-${build.version}${edition !== 'current' ? '-' + edition : ''}.min.js`,
       format: edition === 'current' ? 'esm' : 'iife',
@@ -74,6 +75,7 @@ build.supportedBrowsers().forEach(edition => {
       input,
       plugins,
       output: {
+        extend: true,
         banner: config.banner,
         file: `${outdir}/${build.name}-${build.version}-global.min.js`,
         format: 'iife',
