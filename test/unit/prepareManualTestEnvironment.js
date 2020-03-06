@@ -6,7 +6,7 @@ import { execSync } from 'child_process'
 
 const build = new Build()
 const pkg = JSON.parse(fs.readFileSync('../package.json').toString())
-const name = pkg.name.split('/').pop()
+const name = pkg.name.split('/').pop().replace(/[^\s\da-zA-Z]/gi, '_')
 const sources = fs.readdirSync(path.resolve('./.browser')).filter(i => path.extname(i).split('.').pop() === 'js')
 const options = sources.map(src => `<option value="./${src}">import ${name} from './${src}'</option>`)
 options.sort((a, b) => {
