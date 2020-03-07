@@ -101,7 +101,7 @@ module.exports = function (config) {
     processKillTimeout: 30000,
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
+    basePath: process.cwd(),
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
@@ -116,23 +116,23 @@ module.exports = function (config) {
 
     // list of files / patterns to load in the browser
     files: [
-      { pattern: '../.browser/*.js', included: true, served: true, type: 'module' },
-      { pattern: '../.browser/*.js.map', included: false, served: true, type: 'js' },
-      '../.testsuite/browser-test.js'
+      { pattern: '.browser/*.js', included: true, served: true, type: 'module' },
+      { pattern: '.browser/*.js.map', included: false, served: true, type: 'js' },
+      '.testsuite/browser-test.js'
       // { pattern: '.testsuite/*.js', included: true, nocache: true }
     ],
 
     // list of files to exclude
     exclude: [
-      '../.browser/*-global.*',
-      '../.browser/*-es*.*'
+      '.browser/*-global.*',
+      '.browser/*-es*.*'
     ],
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      '../.browser/*.min.js': ['sourcemap'],
-      '../.testsuite/browser-test.js': ['browserify']
+      '.browser/*.min.js': ['sourcemap'],
+      '.testsuite/browser-test.js': ['browserify']
     },
 
     // test results reporter to use
