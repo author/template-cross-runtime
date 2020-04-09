@@ -16,7 +16,7 @@
     "test:browser": "cd ./test && npm run browser",
     "reset": "echo Resetting test environments && cd ./test && npm run clean && cd ../build && npm run clean",
     "manually": "cd ./test && npm run browser:manual:open",
-    "manual:setup": "cd ./test && npm run browser:manual:create"
+    "manual:setup": "cd ./test && npm run browser:manual:create",
     "again": "cd ./test && npm run browser:manual",
     "setup": "echo \"Installing build and test dependencies...\" && cd ./build && npm i --no-package-lock && cd ../test && npm i --no-package-lock && echo Template Setup Complete.",
     "resetup": "node -e \"let fs=require('fs'),path=require('path');fs.rmdirSync(path.resolve('./build/node_modules'), { recursive: true });fs.rmdirSync(path.resolve('./test/node_modules'), { recursive: true });\" && npm run setup",
