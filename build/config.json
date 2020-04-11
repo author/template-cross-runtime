@@ -11,6 +11,8 @@
       "drop_console": true,
       "passes": 10,
       "warnings": true
-    }
+    },
+    "mangle": false,
+    "module": true
   }
 }
