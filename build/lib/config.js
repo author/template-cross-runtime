@@ -25,7 +25,8 @@ const config = {
       keep_classnames: true,
       drop_console: true,
       passes: 8,
-      warnings: true
+      warnings: true,
+      module: true
     }
   }
 }
