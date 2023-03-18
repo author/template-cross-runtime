@@ -1,3 +1,5 @@
+**ARCHIVE NOTICE:** This project has moved to a series of tools now found at [https://github.com/quikdev](https://github.com/quikdev).
+
 # Cross Runtime Template
 
 This template provides all of the common scaffolding/scripts needed to release modern/testable JavaScript libraries for multiple different runtimes (i.e. browsers and Node). 
